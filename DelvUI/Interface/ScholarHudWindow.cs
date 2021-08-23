@@ -3,7 +3,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.ClientState.Structs.JobGauge;
+using Dalamud.Data;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.JobGauge;
+using Dalamud.Game.ClientState.JobGauge.Types;
+using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.Gui;
 using Dalamud.Plugin;
 using ImGuiNET;
 
@@ -13,35 +18,43 @@ namespace DelvUI.Interface
     {
         public override uint JobId => 28;
 
-        private int FairyBarHeight => PluginConfiguration.FairyBarHeight;
+        protected int FairyBarHeight => PluginConfiguration.FairyBarHeight;
+        protected int FairyBarWidth => PluginConfiguration.FairyBarWidth;
+        protected int FairyBarX => PluginConfiguration.FairyBarX;
+        protected int FairyBarY => PluginConfiguration.FairyBarY;
+        protected int SchAetherBarHeight => PluginConfiguration.SchAetherBarHeight;
+        protected int SchAetherBarWidth => PluginConfiguration.SchAetherBarWidth;
+        protected int SchAetherBarX => PluginConfiguration.SchAetherBarX;
+        protected int SchAetherBarY => PluginConfiguration.SchAetherBarY;
+        protected int SchAetherBarPad => PluginConfiguration.SchAetherBarPad;
 
-        private int FairyBarWidth => PluginConfiguration.FairyBarWidth;
+        protected Dictionary<string, uint> SchAetherColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000];
+        protected Dictionary<string, uint> SchFairyColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000 + 1];
+        protected Dictionary<string, uint> EmptyColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000 + 2];
 
-        private int FairyBarX => PluginConfiguration.FairyBarX;
+        protected new Vector2 BarSize { get; private set; }
 
-        private int FairyBarY => PluginConfiguration.FairyBarY;
+        protected Vector2 BarCoords { get; private set; }
 
-        private int SchAetherBarHeight => PluginConfiguration.SchAetherBarHeight;
-
-        private int SchAetherBarWidth => PluginConfiguration.SchAetherBarWidth;
-
-        private int SchAetherBarX => PluginConfiguration.SchAetherBarX;
-
-        private int SchAetherBarY => PluginConfiguration.SchAetherBarY;
-
-        private int SchAetherBarPad => PluginConfiguration.SchAetherBarPad;
-
-        private Dictionary<string, uint> SchAetherColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000];
-
-        private Dictionary<string, uint> SchFairyColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000 + 1];
-
-        private Dictionary<string, uint> EmptyColor => PluginConfiguration.JobColorMap[Jobs.SCH * 1000 + 2];
-
-        private new Vector2 BarSize { get; set; }
-
-        private Vector2 BarCoords { get; set; }
-
-        public ScholarHudWindow(DalamudPluginInterface pluginInterface, PluginConfiguration pluginConfiguration) : base(pluginInterface, pluginConfiguration) { }
+        public ScholarHudWindow(
+            ClientState clientState,
+            DalamudPluginInterface pluginInterface,
+            DataManager dataManager,
+            GameGui gameGui,
+            JobGauges jobGauges,
+            ObjectTable objectTable, 
+            PluginConfiguration pluginConfiguration,
+            TargetManager targetManager
+        ) : base(
+            clientState,
+            pluginInterface,
+            dataManager,
+            gameGui,
+            jobGauges,
+            objectTable,
+            pluginConfiguration,
+            targetManager
+        ) { }
 
         protected override void Draw(bool _)
         {
@@ -56,7 +69,7 @@ namespace DelvUI.Interface
 
         private void DrawFairyBar()
         {
-            var gauge = (float)PluginInterface.ClientState.JobGauges.Get<SCHGauge>().FairyGaugeAmount;
+            var gauge = (float)JobGauges.Get<SCHGauge>().FairyGauge;
             BarSize = new Vector2(FairyBarWidth, FairyBarHeight);
             BarCoords = new Vector2(FairyBarX, FairyBarY);
             var cursorPos = new Vector2(CenterX - BarCoords.X, CenterY + BarCoords.Y - 49);
@@ -73,8 +86,8 @@ namespace DelvUI.Interface
 
         private void DrawAetherBar()
         {
-            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
-            var aetherFlowBuff = PluginInterface.ClientState.LocalPlayer.StatusEffects.FirstOrDefault(o => o.EffectId == 304);
+            Debug.Assert(ClientState.LocalPlayer != null, "ClientState.LocalPlayer != null");
+            var aetherFlowBuff = ClientState.LocalPlayer.StatusList.FirstOrDefault(o => o.StatusId == 304);
             var barWidth = (SchAetherBarWidth / 3);
             BarSize = new Vector2(barWidth, SchAetherBarHeight);
             BarCoords = new Vector2(SchAetherBarX, SchAetherBarY);
@@ -92,8 +105,9 @@ namespace DelvUI.Interface
 
             drawList.AddRectFilled(cursorPos, cursorPos + BarSize, EmptyColor["gradientRight"]);
             drawList.AddRect(cursorPos, cursorPos + BarSize, 0xFF000000);
-            
-            switch (aetherFlowBuff.StackCount)
+
+            var stackCount = aetherFlowBuff == null ? 0 : aetherFlowBuff.StackCount;
+            switch (stackCount)
             {
                 case 1:
                     drawList.AddRectFilled(cursorPos, cursorPos + BarSize, SchAetherColor["gradientRight"]);
