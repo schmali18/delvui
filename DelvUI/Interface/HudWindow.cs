@@ -279,6 +279,7 @@ namespace DelvUI.Interface {
                     TargetManager.SetTarget(target);
                 }
             }
+
             DrawTargetShield(target, cursorPos, barSize, true);
             
             ImGui.EndChild();
