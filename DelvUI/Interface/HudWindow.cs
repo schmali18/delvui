@@ -197,7 +197,7 @@ namespace DelvUI.Interface {
             DrawOutlinedText(name, new Vector2(cursorPos.X + TargetBarWidth - nameSize.X - 5, cursorPos.Y - 22));
             DrawTargetShield(target, cursorPos, BarSize, true);
 
-            DrawTargetOfTargetBar(target.TargetObjectId);
+            DrawTargetOfTargetBar(target.TargetObject);
         }
         protected virtual void DrawFocusBar() {
             var focus = TargetManager.FocusTarget;
@@ -239,20 +239,10 @@ namespace DelvUI.Interface {
             DrawOutlinedText(name, new Vector2(cursorPos.X + FocusBarWidth / 2f - textSize.X / 2f, cursorPos.Y - 22));
         }
         
-        protected virtual void DrawTargetOfTargetBar(uint targetActorId) {
-            GameObject target = null;
-            
-            for (var i = 0; i < 200; i += 2) {
-                if (ObjectTable[i]?.ObjectId == targetActorId) {
-                    target = ObjectTable[i];
-                }
-            }
-
-            
-            if (target is not Character actor) {
+        protected virtual void DrawTargetOfTargetBar(GameObject targetObject) {
+            if (targetObject is not Character actor) {
                 return;
             }
-
 
             var barSize = new Vector2(ToTBarWidth, ToTBarHeight);
 
@@ -276,11 +266,11 @@ namespace DelvUI.Interface {
                 drawList.AddRect(cursorPos, cursorPos + barSize, 0xFF000000);
                 
                 if (ImGui.IsItemClicked()) {
-                    TargetManager.SetTarget(target);
+                    TargetManager.SetTarget(targetObject);
                 }
             }
 
-            DrawTargetShield(target, cursorPos, barSize, true);
+            DrawTargetShield(targetObject, cursorPos, barSize, true);
             
             ImGui.EndChild();
         }
