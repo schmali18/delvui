@@ -68,8 +68,8 @@ namespace DelvUI.Interface
             var miasma = actor.StatusList.FirstOrDefault(o => o.StatusId == 1215 || o.StatusId == 180);
             var bio = actor.StatusList.FirstOrDefault(o => o.StatusId == 1214 || o.StatusId == 179 || o.StatusId == 189);
 
-            var miasmaDuration = miasma?.RemainingTime ?? 0f;
-            var bioDuration = bio?.RemainingTime ?? 0f;
+            var miasmaDuration = miasma == null ? 0f : miasma.RemainingTime;
+            var bioDuration = bio == null ? 0f : bio.RemainingTime;
 
             var miasmaColor = miasmaDuration > 5 ? 0xFFFAFFA4 : expiryColor;
             var bioColor = bioDuration > 5 ? 0xFF005239 : expiryColor;
@@ -110,7 +110,7 @@ namespace DelvUI.Interface
             drawList.AddRect(cursorPos, cursorPos + barSize, 0xFF000000);
             cursorPos = new Vector2(CenterX - 127, CenterY + YOffset - 22);
 
-            var stackCount = aetherFlowBuff?.StackCount ?? 0;
+            var stackCount = aetherFlowBuff == null ? 0 : aetherFlowBuff.StackCount;
             switch (stackCount)
             {
                 case 1:
@@ -133,7 +133,7 @@ namespace DelvUI.Interface
         {
             Debug.Assert(ClientState.LocalPlayer != null, "ClientState.LocalPlayer != null");
             var ruinBuff = ClientState.LocalPlayer.StatusList.FirstOrDefault(o => o.StatusId == 1212);
-            var ruinStacks = ruinBuff?.StackCount ?? 0;
+            var ruinStacks = ruinBuff == null ? 0 : ruinBuff.StackCount;
 
             const int xPadding = 2;
             var barWidth = (BarWidth - xPadding * 3) / 4;
