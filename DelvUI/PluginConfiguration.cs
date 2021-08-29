@@ -150,12 +150,21 @@ namespace DelvUI {
         public int DNCVerticalBarsXPos { get; set; } = 127;
         public int DNCVerticalBarsYPos { get; set; } = 476;
         public int DNCEspritBarPadding { get; set; } = 2;
+        public int DNCFeatherBarPadding { get; set; } = 2;
+        public int DNCStepBarPadding { get; set; } = 2;
         public int DNCEspritBarXPos { get; set; } = 127;
         public int DNCEspritBarYPos { get; set; } = 430;
         public int DNCFeatherBarXPos { get; set; } = 127;
         public int DNCFeatherBarYPos { get; set; } = 442;
         public int DNCStepBarXPos { get; set; } = 127;
         public int DNCStepBarYPos { get; set; } = 450;
+        public bool DNCEnableEspritBar { get; set; } = true;
+        public bool DNCEnableFeatherBar { get; set; } = true;
+        public bool DNCEnableStepBar { get; set; } = true;
+        public bool DNCEnableProcBars { get; set; } = true;
+        public bool DNCEnableProcTimerText { get; set; } = true;
+
+
 
 
 

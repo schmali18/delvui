@@ -50,12 +50,20 @@ namespace DelvUI.Interface {
         private int ProcBarYPos => PluginConfiguration.DNCVerticalBarsYPos;
 
         private int EspritPadding => PluginConfiguration.DNCEspritBarPadding;
+        private int FeatherPadding => PluginConfiguration.DNCFeatherBarPadding;
+        private int StepPadding => PluginConfiguration.DNCStepBarPadding;
         private int EspritBarXPOS => PluginConfiguration.DNCEspritBarXPos;
         private int EspritBarYPOS => PluginConfiguration.DNCEspritBarYPos;
         private int FeatherBarXPos => PluginConfiguration.DNCFeatherBarXPos;
         private int FeatherBarYPos => PluginConfiguration.DNCFeatherBarYPos;
         private int StepBarXPos => PluginConfiguration.DNCStepBarXPos;
         private int StepBarYPos => PluginConfiguration.DNCStepBarYPos;
+        private bool enableEspritBar => PluginConfiguration.DNCEnableEspritBar;
+        private bool enableFeatherBar => PluginConfiguration.DNCEnableFeatherBar;
+        private bool enableStepBar => PluginConfiguration.DNCEnableStepBar;
+        private bool enableProcBars => PluginConfiguration.DNCEnableProcBars;
+        private bool enableProcTimerText => PluginConfiguration.DNCEnableProcTimerText;
+        
 
         private new static int XOffset => 127;
         private new static int YOffset => 476;
@@ -66,10 +74,10 @@ namespace DelvUI.Interface {
 
         protected override void Draw(bool _) {
             DrawHealthBar();
-            DrawPrimaryResourceBar();
-            DrawSecondaryResourceBar();
-            DrawProcBars();
-            DrawStepBar();
+            if(enableEspritBar) DrawPrimaryResourceBar();
+            if(enableFeatherBar) DrawSecondaryResourceBar();
+            if(enableProcBars) DrawProcBars();
+            if(enableStepBar) DrawStepBar();
             DrawTargetBar();
             DrawFocusBar();
             DrawCastBar();
@@ -133,7 +141,7 @@ namespace DelvUI.Interface {
         private void DrawSecondaryResourceBar() {
             var gauge = PluginInterface.ClientState.JobGauges.Get<DNCGauge>();
 
-            const int xPadding = 2;
+            int xPadding = FeatherPadding;
             var barWidth = (BarWidth - xPadding * 3) / 4;
             var barSize = new Vector2(barWidth, BarHeight);
             var xPos = CenterX + FeatherBarXPos - BarWidth/2;
@@ -262,7 +270,7 @@ namespace DelvUI.Interface {
         {
             var gauge = PluginInterface.ClientState.JobGauges.Get<DNCGauge>();
 
-            const int xPadding = 2;
+            int xPadding = StepPadding;
             var barWidthTech = (BarWidth - xPadding * 3) / 4;
             var barWidthStandard = (BarWidth - xPadding) / 2;
             var barWidthNormal = BarWidth;
