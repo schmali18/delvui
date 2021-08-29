@@ -18,13 +18,13 @@ namespace DelvUI.Interface {
         public BardHudWindow(DalamudPluginInterface pluginInterface, PluginConfiguration pluginConfiguration) : base(pluginInterface, pluginConfiguration) { }
 
         protected override void Draw(bool _) {
-            DrawHealthBar();
             DrawActiveDots();
             HandleCurrentSong();
             DrawSoulVoiceBar();
-            DrawTargetBar();
-            DrawCastBar();
-            DrawFocusBar();
+        }
+
+        protected override void DrawPrimaryResourceBar()
+        {
         }
 
         private void DrawActiveDots()

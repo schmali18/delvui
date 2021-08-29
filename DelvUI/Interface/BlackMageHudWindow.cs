@@ -5,6 +5,7 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DelvUI.Interface
 {
@@ -12,13 +13,14 @@ namespace DelvUI.Interface
     {
         public override uint JobId => Jobs.BLM;
 
-        private float OriginX => CenterX;
+        private float OriginX => CenterX + PluginConfiguration.BLMHorizontalOffset;
         private float OriginY => CenterY + YOffset + PluginConfiguration.BLMVerticalOffset;
         private int VerticalSpaceBetweenBars => PluginConfiguration.BLMVerticalSpaceBetweenBars;
         private int HorizontalSpaceBetweenBars => PluginConfiguration.BLMHorizontalSpaceBetweenBars;
         private int ManaBarWidth => PluginConfiguration.BLMManaBarWidth;
         private int ManaBarHeight => PluginConfiguration.BLMManaBarHeight;
         private int UmbralHeartHeight => PluginConfiguration.BLMUmbralHeartHeight;
+        private int UmbralHeartWidth=> PluginConfiguration.BLMUmbralHeartWidth;
         private int PolyglotHeight => PluginConfiguration.BLMPolyglotHeight;
         private int PolyglotWidth => PluginConfiguration.BLMPolyglotWidth;
         private bool ShowManaValue => PluginConfiguration.BLMShowManaValue;
@@ -26,6 +28,7 @@ namespace DelvUI.Interface
         private int ManaThresholdValue => PluginConfiguration.BLMManaThresholdValue;
         private bool ShowTripleCast => PluginConfiguration.BLMShowTripleCast;
         private int TripleCastHeight => PluginConfiguration.BLMTripleCastHeight;
+        private int TripleCastWidth => PluginConfiguration.BLMTripleCastWidth;
         private bool ShowFirestarterProcs => PluginConfiguration.BLMShowFirestarterProcs;
         private bool ShowThundercloudProcs => PluginConfiguration.BLMShowThundercloudProcs;
         private int ProcsHeight => PluginConfiguration.BLMProcsHeight;
@@ -46,11 +49,6 @@ namespace DelvUI.Interface
 
         protected override void Draw(bool _)
         {
-            DrawHealthBar();
-            DrawFocusBar();
-            DrawCastBar();
-            DrawTargetBar();
-
             DrawEnochian();
             DrawManaBar();
             DrawUmbralHeartStacks();
@@ -72,8 +70,14 @@ namespace DelvUI.Interface
             }
         }
 
+        protected override void DrawPrimaryResourceBar()
+        {
+        }
+
         protected virtual void DrawManaBar()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var gauge = PluginInterface.ClientState.JobGauges.Get<BLMGauge>();
 
             var actor = PluginInterface.ClientState.LocalPlayer;
@@ -105,23 +109,28 @@ namespace DelvUI.Interface
             }
 
             // element timer
-            var time = gauge.ElementTimeRemaining > 10 ? gauge.ElementTimeRemaining / 1000 + 1 : 0;
-            var text = $"{time,0}";
-            var textSize = ImGui.CalcTextSize(text);
-            DrawOutlinedText(text, new Vector2(CenterX - textSize.X / 2f, OriginY - ManaBarHeight / 2f - textSize.Y / 2f));
+            if (gauge.InAstralFire() || gauge.InUmbralIce())
+            {
+                var time = gauge.ElementTimeRemaining > 10 ? gauge.ElementTimeRemaining / 1000 + 1 : 0;
+                var text = $"{time,0}";
+                var textSize = ImGui.CalcTextSize(text);
+                DrawOutlinedText(text, new Vector2(OriginX - textSize.X / 2f, OriginY - ManaBarHeight / 2f - textSize.Y / 2f));
+            }
 
             // mana
             if (ShowManaValue)
             {
                 var mana = PluginInterface.ClientState.LocalPlayer.CurrentMp;
-                text = $"{mana,0}";
-                textSize = ImGui.CalcTextSize(text);
-                DrawOutlinedText(text, new Vector2(CenterX - barSize.X / 2f + 2, OriginY - ManaBarHeight / 2f - textSize.Y / 2f));
+                var text = $"{mana,0}";
+                var textSize = ImGui.CalcTextSize(text);
+                DrawOutlinedText(text, new Vector2(OriginX - barSize.X / 2f + 2, OriginY - ManaBarHeight / 2f - textSize.Y / 2f));
             }
         }
 
         protected virtual void DrawEnochian()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var gauge = PluginInterface.ClientState.JobGauges.Get<BLMGauge>();
             if (!gauge.IsEnoActive())
             {
@@ -137,10 +146,13 @@ namespace DelvUI.Interface
 
         protected virtual void DrawUmbralHeartStacks()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var gauge = PluginInterface.ClientState.JobGauges.Get<BLMGauge>();
 
-            var barSize = new Vector2((ManaBarWidth - (HorizontalSpaceBetweenBars * 2)) / 3, UmbralHeartHeight);
-            var cursorPos = new Vector2(OriginX - ManaBarWidth / 2, OriginY - ManaBarHeight - VerticalSpaceBetweenBars - UmbralHeartHeight);
+            var barSize = new Vector2(UmbralHeartWidth, UmbralHeartHeight);
+            var totalWidth = barSize.X * 3 + HorizontalSpaceBetweenBars * 2;
+            var cursorPos = new Vector2(OriginX - totalWidth / 2, OriginY - ManaBarHeight - VerticalSpaceBetweenBars - UmbralHeartHeight);
 
             var drawList = ImGui.GetWindowDrawList();
 
@@ -162,6 +174,8 @@ namespace DelvUI.Interface
 
         protected virtual void DrawPolyglot()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var gauge = PluginInterface.ClientState.JobGauges.Get<BLMGauge>();
             var barSize = new Vector2(PolyglotWidth, PolyglotHeight);
             var scale = gauge.NumPolyglotStacks == 2 ? 0 : (gauge.IsEnoActive() ? gauge.TimeUntilNextPolyglot / 30000f : 1);
@@ -179,12 +193,14 @@ namespace DelvUI.Interface
             DrawPolyglotStack(cursorPos, barSize, gauge.NumPolyglotStacks == 0 ? scale : 1);
 
             // 2nd stack
-            cursorPos.X = CenterX + (HorizontalSpaceBetweenBars / 2f);
+            cursorPos.X = OriginX + (HorizontalSpaceBetweenBars / 2f);
             DrawPolyglotStack(cursorPos, barSize, gauge.NumPolyglotStacks >= 1 ? scale : 0);
         }
 
         private void DrawPolyglotStack(Vector2 position, Vector2 size, float scale)
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var drawList = ImGui.GetWindowDrawList();
 
             // glow
@@ -205,9 +221,10 @@ namespace DelvUI.Interface
                     PolyglotColor["gradientLeft"], PolyglotColor["gradientRight"], PolyglotColor["gradientRight"], PolyglotColor["gradientLeft"]
                 );
             }
-            else
+            else if (scale > 0)
             {
-                drawList.AddRectFilled(position, position + new Vector2(size.X * scale, size.Y), PolyglotColor["gradientLeft"]);
+                var width = Math.Max(1, size.X * scale);
+                drawList.AddRectFilled(position, position + new Vector2(width, size.Y), PolyglotColor["gradientLeft"]);
             }
 
             // black border
@@ -216,8 +233,11 @@ namespace DelvUI.Interface
 
         protected virtual void DrawTripleCast()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var tripleStackBuff = PluginInterface.ClientState.LocalPlayer.StatusEffects.FirstOrDefault(o => o.EffectId == 1211);
-            var barSize = new Vector2((ManaBarWidth - (HorizontalSpaceBetweenBars * 2)) / 3, TripleCastHeight);
+
+            var barSize = new Vector2(TripleCastWidth, TripleCastHeight);
             var totalWidth = barSize.X * 3 + HorizontalSpaceBetweenBars * 2;
             var cursorPos = new Vector2(OriginX - totalWidth / 2, OriginY - ManaBarHeight - VerticalSpaceBetweenBars - UmbralHeartHeight - VerticalSpaceBetweenBars - barSize.Y);
 
@@ -241,8 +261,10 @@ namespace DelvUI.Interface
 
         protected virtual void DrawProcs()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var firestarterTimer = ShowFirestarterProcs ? Math.Abs(PluginInterface.ClientState.LocalPlayer.StatusEffects.FirstOrDefault(o => o.EffectId == 165).Duration) : 0;
-            var thundercloudTimer = ShowThundercloudProcs ? PluginInterface.ClientState.LocalPlayer.StatusEffects.FirstOrDefault(o => o.EffectId == 164).Duration : 0;
+            var thundercloudTimer = ShowThundercloudProcs ? Math.Abs(PluginInterface.ClientState.LocalPlayer.StatusEffects.FirstOrDefault(o => o.EffectId == 164).Duration) : 0;
 
             if (firestarterTimer == 0 && thundercloudTimer == 0)
             {
@@ -277,6 +299,8 @@ namespace DelvUI.Interface
 
         protected virtual void DrawDotTimer()
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var target = PluginInterface.ClientState.Targets.SoftTarget ?? PluginInterface.ClientState.Targets.CurrentTarget;
             if (target is null)
             {
@@ -320,8 +344,11 @@ namespace DelvUI.Interface
 
         private void DrawTimerBar(Vector2 position, float scale, float height, Dictionary<string, uint> colorMap, bool inverted)
         {
+            Debug.Assert(PluginInterface.ClientState.LocalPlayer != null, "PluginInterface.ClientState.LocalPlayer != null");
+
             var drawList = ImGui.GetWindowDrawList();
             var size = new Vector2((ManaBarWidth / 2f - PolyglotWidth - HorizontalSpaceBetweenBars * 2f) * scale, height);
+            size.X = Math.Max(1, size.X);
             var endPoint = inverted ? position - size : position + size;
 
             drawList.AddRectFilledMultiColor(position, endPoint,
