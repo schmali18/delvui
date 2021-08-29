@@ -201,9 +201,12 @@ namespace DelvUI.Interface {
                     new Vector2(cursorPos.X+ barSize.X, cursorPos.Y + barSize.Y*2),
                     WindmillColour["gradientLeft"], WindmillColour["gradientRight"], WindmillColour["gradientRight"], WindmillColour["gradientLeft"]
                 );
-                var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
-                var textSize = ImGui.CalcTextSize(durationText);
-                DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y+barSize.Y-22));
+                if (enableProcTimerText)
+                {
+                    var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
+                    var textSize = ImGui.CalcTextSize(durationText);
+                    DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y - 22));
+                }
             }
             drawList.AddRect(new Vector2(cursorPos.X, cursorPos.Y + barSize.Y),
                              new Vector2(cursorPos.X+ barSize.X, cursorPos.Y + barSize.Y * 2), 0xFF000000);
@@ -219,9 +222,12 @@ namespace DelvUI.Interface {
                     new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y + ((barSize.Y) / 20) * duration + offsetLower),
                     ShowerColour["gradientLeft"], ShowerColour["gradientRight"], ShowerColour["gradientRight"], ShowerColour["gradientLeft"]
                 );
-                var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
-                var textSize = ImGui.CalcTextSize(durationText);
-                DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y+barSize.Y+offsetLower+48));
+                if (enableProcTimerText)
+                {
+                    var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
+                    var textSize = ImGui.CalcTextSize(durationText);
+                    DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y + offsetLower + 48));
+                }
             }
             drawList.AddRect(new Vector2(cursorPos.X, cursorPos.Y + barSize.Y + offsetLower),
                              new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y * 2 + offsetLower), 0xFF000000);
@@ -239,9 +245,12 @@ namespace DelvUI.Interface {
                     new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y*2),
                     CascadeColour["gradientLeft"], CascadeColour["gradientRight"], CascadeColour["gradientRight"], CascadeColour["gradientLeft"]
                 );
-                var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
-                var textSize = ImGui.CalcTextSize(durationText);
-                DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y - 22));
+                if (enableProcTimerText)
+                {
+                    var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
+                    var textSize = ImGui.CalcTextSize(durationText);
+                    DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y - 22));
+                }
             }
             drawList.AddRect(new Vector2(cursorPos.X, cursorPos.Y + barSize.Y),
                              new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y * 2), 0xFF000000);
@@ -257,9 +266,12 @@ namespace DelvUI.Interface {
                     new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y + ((barSize.Y) / 20) * duration + offsetLower),
                     FountainColour["gradientLeft"], FountainColour["gradientRight"], FountainColour["gradientRight"], FountainColour["gradientLeft"]
                 );
-                var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
-                var textSize = ImGui.CalcTextSize(durationText);
-                DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y + offsetLower + 48));
+                if (enableProcTimerText)
+                {
+                    var durationText = duration != 0 ? Math.Round(duration).ToString(CultureInfo.InvariantCulture) : "";
+                    var textSize = ImGui.CalcTextSize(durationText);
+                    DrawOutlinedText(durationText, new Vector2(cursorPos.X + barSize.X / 2f - textSize.X / 2f, cursorPos.Y + barSize.Y + offsetLower + 48));
+                }
             }
             drawList.AddRect(new Vector2(cursorPos.X, cursorPos.Y + barSize.Y + offsetLower),
                              new Vector2(cursorPos.X + barSize.X, cursorPos.Y + barSize.Y * 2 + offsetLower), 0xFF000000);

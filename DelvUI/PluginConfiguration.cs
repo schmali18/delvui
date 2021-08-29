@@ -164,11 +164,6 @@ namespace DelvUI {
         public bool DNCEnableProcBars { get; set; } = true;
         public bool DNCEnableProcTimerText { get; set; } = true;
 
-
-
-
-
-
         public Vector4 DNCCascadeColour = new Vector4(109f/255f, 172f/255f, 67f/255f, 100f/100f);
         public Vector4 DNCFountainColour = new Vector4(229f / 255f, 223f / 255f, 89f / 255f, 100f / 100f);
         public Vector4 DNCWindmillColour = new Vector4(228f / 255f, 229f / 255f, 229f / 255f, 100f / 100f);

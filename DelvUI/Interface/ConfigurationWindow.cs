@@ -647,6 +647,12 @@ namespace DelvUI.Interface
                         _pluginConfiguration.DNCEnableProcBars = enableProcBars;
                         _pluginConfiguration.Save();
                     }
+                    bool enableProcTimerText = _pluginConfiguration.DNCEnableProcTimerText;
+                    if (ImGui.Checkbox("Enable Proc Timers", ref enableProcTimerText))
+                    {
+                        _pluginConfiguration.DNCEnableProcTimerText = enableProcTimerText;
+                        _pluginConfiguration.Save();
+                    }
                     bool enableStepBar = _pluginConfiguration.DNCEnableStepBar;
                     if (ImGui.Checkbox("Enable Step Bar", ref enableStepBar))
                     {
