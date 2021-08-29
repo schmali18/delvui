@@ -508,7 +508,113 @@ namespace DelvUI.Interface {
                     
                     ImGui.EndTabItem();
                 }
-                
+
+                if (ImGui.BeginTabItem("Dancer"))
+                {
+                    int verticalProcBarsWidth = _pluginConfiguration.DNCVerticalBarsWidth;
+                    if (ImGui.DragInt("Proc Bars Width", ref verticalProcBarsWidth, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCVerticalBarsWidth = verticalProcBarsWidth;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int verticalProcBarsHeight = _pluginConfiguration.DNCVerticalBarsHeight;
+                    if (ImGui.DragInt("Proc Bars Height", ref verticalProcBarsHeight, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCVerticalBarsHeight = verticalProcBarsHeight;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int verticalProcBarsXPos = _pluginConfiguration.DNCVerticalBarsXPos;
+                    if (ImGui.DragInt("Proc Bars XPos", ref verticalProcBarsXPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCVerticalBarsXPos = verticalProcBarsXPos;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int verticalProcBarsYPos = _pluginConfiguration.DNCVerticalBarsYPos;
+                    if (ImGui.DragInt("Proc Bars YPos", ref verticalProcBarsYPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCVerticalBarsYPos = verticalProcBarsYPos;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int lowerProcOffset = _pluginConfiguration.DNCLowerProcOffset;
+                    if (ImGui.DragInt("Proc Bars Offset Lower", ref lowerProcOffset, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCLowerProcOffset = lowerProcOffset;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int rightProcOffset = _pluginConfiguration.DNCRightProcOffset;
+                    if (ImGui.DragInt("Proc Bars Offset Right", ref rightProcOffset, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCRightProcOffset = rightProcOffset;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int horizontalBarsWidth = _pluginConfiguration.DNCHorizontalBarsWidth;
+                    if (ImGui.DragInt("Horizontal Bars Width", ref horizontalBarsWidth, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCHorizontalBarsWidth = horizontalBarsWidth;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int horizontalBarsHeight = _pluginConfiguration.DNCHorizontalBarsHeight;
+                    if (ImGui.DragInt("Horizontal Bars Height", ref horizontalBarsHeight, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCHorizontalBarsHeight = horizontalBarsHeight;
+                        _pluginConfiguration.Save();
+                    }
+
+                    int espritBarXPos = _pluginConfiguration.DNCEspritBarXPos;
+                    if (ImGui.DragInt("Esprit Bars XPos", ref espritBarXPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCEspritBarXPos = espritBarXPos;
+                        _pluginConfiguration.Save();
+                    }
+                    int espritBarYPos = _pluginConfiguration.DNCEspritBarYPos;
+                    if (ImGui.DragInt("Esprit Bars YPos", ref espritBarYPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCEspritBarYPos = espritBarYPos;
+                        _pluginConfiguration.Save();
+                    }
+                    int featherBarXPos = _pluginConfiguration.DNCFeatherBarXPos;
+                    if (ImGui.DragInt("Feather Bars XPos", ref featherBarXPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCFeatherBarXPos = featherBarXPos;
+                        _pluginConfiguration.Save();
+                    }
+                    int featherBarYPos = _pluginConfiguration.DNCFeatherBarYPos;
+                    if (ImGui.DragInt("Feather Bars YPos", ref featherBarYPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCFeatherBarYPos = featherBarYPos;
+                        _pluginConfiguration.Save();
+                    }
+                    int stepBarXPos = _pluginConfiguration.DNCStepBarXPos;
+                    if (ImGui.DragInt("Step Bars XPos", ref stepBarXPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCStepBarXPos = stepBarXPos;
+                        _pluginConfiguration.Save();
+                    }
+                    int stepBarYPos = _pluginConfiguration.DNCStepBarYPos;
+                    if (ImGui.DragInt("Step Bars YPos", ref stepBarYPos, 0.1f, -2000, 2000))
+                    {
+                        _pluginConfiguration.DNCStepBarYPos = stepBarYPos;
+                        _pluginConfiguration.Save();
+                    }
+                    changed |= ImGui.ColorEdit4("Cascade Proc Colour", ref _pluginConfiguration.DNCCascadeColour);
+                    changed |= ImGui.ColorEdit4("Fountain Proc Colour", ref _pluginConfiguration.DNCFountainColour);
+                    changed |= ImGui.ColorEdit4("Windmill Proc Colour", ref _pluginConfiguration.DNCWindmillColour);
+                    changed |= ImGui.ColorEdit4("Shower Proc Colour", ref _pluginConfiguration.DNCShowerColour);
+                    changed |= ImGui.ColorEdit4("Emboite Colour", ref _pluginConfiguration.DNCEmbroiteColour);
+                    changed |= ImGui.ColorEdit4("Entrechat Colour", ref _pluginConfiguration.DNCEntrechatColour);
+                    changed |= ImGui.ColorEdit4("Jete Colour", ref _pluginConfiguration.DNCJeteColour);
+                    changed |= ImGui.ColorEdit4("Pirouette Colour", ref _pluginConfiguration.DNCPirouetteColour);
+
+
+                }
+
                 if (ImGui.BeginTabItem("Paladin"))
                 {
                     int pldManaHeight = _pluginConfiguration.PLDManaHeight;
